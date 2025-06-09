@@ -48,6 +48,15 @@
             margin-left: 0.25rem;
         }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KVZXSXS4JP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-KVZXSXS4JP');
+    </script>
 </head>
 
 <body class="bg-gray-900 text-gray-100 flex flex-col min-h-screen selection:bg-sky-500 selection:text-white">
@@ -170,6 +179,8 @@
             generateButton.addEventListener('click', async () => {
                 if (isAnimating) return;
 
+                gtag('event', 'button_click', { 'event_category': 'Action', 'event_label': 'Generate Postcode' });
+
                 generateButton.disabled = true;
                 generateButton.textContent = "生成中...";
                 showPlaceButton.style.display = 'none';
@@ -203,6 +214,8 @@
                     return;
                 }
 
+                gtag('event', 'button_click', { 'event_category': 'Action', 'event_label': 'Show Place' });
+
                 let addressHTML = `<div class="text-left">
                         <span class="block"><span class="font-semibold">${currentAddress.prefecture || ''}</span> (都道府県)</span>
                         <span class="block"><span class="font-semibold">${currentAddress.city || ''}</span> (市区町村)</span>`;
@@ -219,6 +232,8 @@
 
             copyAddressButton.addEventListener('click', () => {
                 if (!currentAddress) return;
+
+                gtag('event', 'button_click', { 'event_category': 'Action', 'event_label': 'Copy Address' });
 
                 const zipcodeFormatted = `〒${currentAddress.zipcode.slice(0, 3)}-${currentAddress.zipcode.slice(3)}`;
                 const addressText = `${zipcodeFormatted}\n${currentAddress.prefecture}${currentAddress.city}${currentAddress.detail || ''}`.trim();
@@ -247,6 +262,8 @@
 
             openMapButton.addEventListener('click', () => {
                 if (!currentAddress) return;
+
+                gtag('event', 'button_click', { 'event_category': 'Action', 'event_label': 'Open Map' });
 
                 const query = `${currentAddress.prefecture} ${currentAddress.city} ${currentAddress.detail}`.trim();
                 const encodedQuery = encodeURIComponent(query);
