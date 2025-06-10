@@ -1,56 +1,31 @@
-let SPRSHEET = null;
-let ZIPCODE_SHEET = null;
-let PARAM_SHEET = null;
-
-const NO_DETAIL_TXT_RANGE = "B2";
 const ZIPCODE_COLUMN = "C";
 const PREFECTURE_COLUMN = "G";
 const CITY_COLUMN = "H";
 const DETAIL_COLUMN = "I";
 
-
 function myFunction() {
 }
 
-function assignSPRSHEET() {
-    if (SPRSHEET) return;
-    SPRSHEET = SpreadsheetApp.getActiveSpreadsheet();
-}
-
-function assignZipcodeSheet() {
-    if (ZIPCODE_SHEET) return;
-
-    assignSPRSHEET();
-    ZIPCODE_SHEET = SPRSHEET.getSheetByName("zipcode");
-}
-
-function assignParamSheet() {
-    if (PARAM_SHEET) return;
-
-    assignSPRSHEET();
-    PARAM_SHEET = SPRSHEET.getSheetByName("params");
-}
-
-function getRandomRowNum() {
-    assignZipcodeSheet();
-
+function getRandomRowNum(ZIPCODE_SHEET) {
     const lastRow = ZIPCODE_SHEET.getLastRow();
     return Math.floor(Math.random() * lastRow) + 1;
 }
 
 function doGet() {
-    const randomRow = getRandomRowNum();
+    const SPRSHEET = SpreadsheetApp.getActiveSpreadsheet();
+    const ZIPCODE_SHEET = SPRSHEET.getSheetByName("zipcode");
+    const NO_DETAIL_SUBSTR = "以下に掲載";
 
-    assignZipcodeSheet();
-    assignParamSheet();
+    const randomRow = getRandomRowNum(ZIPCODE_SHEET);
 
-    const zipcode = ZIPCODE_SHEET.getRange(`${ZIPCODE_COLUMN}${randomRow}`).getValue();
-    const prefecture = ZIPCODE_SHEET.getRange(`${PREFECTURE_COLUMN}${randomRow}`).getValue();
-    const city = ZIPCODE_SHEET.getRange(`${CITY_COLUMN}${randomRow}`).getValue();
-    const detail = ZIPCODE_SHEET.getRange(`${DETAIL_COLUMN}${randomRow}`).getValue();
+    const values = ZIPCODE_SHEET.getRange(`${ZIPCODE_COLUMN}${randomRow}:${DETAIL_COLUMN}${randomRow}`).getValues();
+    const val_len = values[0].length;
 
-    const noDetailTxt = PARAM_SHEET.getRange(NO_DETAIL_TXT_RANGE).getValue();
-    if (detail === noDetailTxt) {
+    const zipcode = values[0][0];
+    const prefecture = values[0][val_len - 3];
+    const city = values[0][val_len - 2];
+    let detail = values[0][val_len - 1];
+    if (detail.includes(NO_DETAIL_SUBSTR)) {
         detail = "";
     }
 
